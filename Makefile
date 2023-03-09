@@ -6,7 +6,7 @@ include mk/settings.mk
 # Helper targets
 
 .PHONY: all
-all: $(LFS)/usr/lib64/libstdc++.a
+all: $(LFS)/usr/bin/m4
 
 .PHONY: clean
 clean:
