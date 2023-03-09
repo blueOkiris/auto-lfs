@@ -11,6 +11,7 @@ MPC_VERS :=			1.3.1
 GCC_VERS :=			12.2.0
 GLIBC_VERS :=		2.37
 KERNEL_VERS :=		6.1.11
+M4_VERS :=			1.4.19
 
 LFS_PKG_SRC :=		lfs-packages-$(LFS_VERS).tar
 LFS_PKG_SRC_URL :=	https://ftp.osuosl.org/pub/lfs/lfs-packages/$(LFS_PKG_SRC)
