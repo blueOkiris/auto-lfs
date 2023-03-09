@@ -21,10 +21,8 @@ clean:
 	rm -rf $(LFS)
 
 # Note that this is a chained/linear build. Each uses the target of the previous as the sources
+
 include mk/fs.mk
-include mk/cross-tools/binutils.mk
-include mk/cross-tools/gcc.mk
-include mk/cross-tools/kernel-headers.mk
-include mk/cross-tools/glibc.mk
-include mk/cross-tools/libstdcpp.mk
+include mk/cross-tools.mk
+include mk/tmp-tools.mk
 
