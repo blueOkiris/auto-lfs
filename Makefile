@@ -6,7 +6,7 @@ include mk/settings.mk
 # Helper targets
 
 .PHONY: all
-all: $(LFS)/usr/lib/libncurses.so.6.4
+all: $(LFS)/bin/sh
 
 .PHONY: clean
 clean:
