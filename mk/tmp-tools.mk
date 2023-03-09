@@ -36,3 +36,38 @@ $(LFS)/sources/m4-$(M4_VERS)/src/m4 : | $(LFS)/sources/m4-$(M4_VERS)/Makefile
 $(LFS)/usr/bin/m4: | $(LFS)/sources/m4-$(M4_VERS)/src/m4
 	make -C $(LFS)/sources/m4-$(M4_VERS) DESTDIR=$(LFS) install
 
+# Ncurses
+
+$(LFS)/sources/ncurses-$(NCURSES_VERS)/: | $(LFS)/usr/bin/m4
+	tar xfvz $(LFS)/sources/$(LFS_VERS)/ncurses-$(NCURSES_VERS).tar.gz -C $(LFS)/sources/
+
+$(LFS)/sources/ncurses-$(NCURSES_VERS)/build/tic: | $(LFS)/sources/ncurses-$(NCURSES_VERS)/
+	mkdir -p $(LFS)/sources/ncurses-$(NCURSES_VERS)/build/
+	cd $(LFS)/sources/ncurses-$(NCURSES_VERS)/build; \
+	../configure
+	make -C $(LFS)/sources/ncurses-$(NCURSES_VERS)/build/include -j$(shell nproc)
+	make -C $(LFS)/sources/ncurses-$(NCURSES_VERS)/build/progs tic -j$(shell nproc)
+
+$(LFS)/sources/ncurses-$(NCURSES_VERS)/Makefile: | $(LFS)/sources/ncurses-$(NCURSES_VERS)/build/tic
+	cd $(LFS)/sources/ncurses-$(NCURSES_VERS); \
+	./configure --prefix=/usr \
+		--host=$(LFS_TGT) \
+		--build=$(shell $(LFS)/sources/ncurses-$(NCURSES_VERS)/config.guess) \
+		--mandir=/usr/share/man \
+		--with-manpage-format=normal \
+		--with-shared \
+		--without-normal \
+		--with-cxx-shared \
+		--without-debug \
+		--without-ada \
+		--disable-scripting \
+		--enable-widec
+
+$(LFS)/sources/ncurses-$(NCURSES_VERS)/lib/libncurses.so.6.4: | $(LFS)/sources/ncurses-$(NCURSES_VERS)/Makefile
+	make -C $(LFS)/sources/ncurses-$(NCURSES_VERS)/ -j$(shell nproc)
+
+$(LFS)/usr/lib/libncursesw.so.6.4: | $(LFS)/sources/ncurses-$(NCURSES_VERS)/lib/libncurses.so.6.4
+	make -C $(LFS)/sources/ncurses-$(NCURSES_VERS) \
+		DESTDIR=$(LFS) TIC_PATH=$(LFS)/sources/ncurses-$(NCURSES_VERS)/build/progs/tic \
+		install
+
