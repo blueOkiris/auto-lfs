@@ -14,7 +14,7 @@ $(LFS)/sources/$(LFS_VERS)/binutils-$(BINUTILS_VERS).tar.xz: | $(LFS)/sources/$(
 $(LFS)/sources/binutils-$(BINUTILS_VERS)/: | $(LFS)/sources/$(LFS_VERS)/binutils-$(BINUTILS_VERS).tar.xz
 	tar xfv $(LFS)/sources/$(LFS_VERS)/binutils-$(BINUTILS_VERS).tar.xz -C $(LFS)/sources
 
-$(LFS)/sources/binutils-$(BINUTILS_VERS)/build/ar: | $(LFS)/sources/binutils-$(BINUTILS_VERS)/
+$(LFS)/sources/binutils-$(BINUTILS_VERS)/build/Makefile: | $(LFS)/sources/binutils-$(BINUTILS_VERS)/
 	mkdir -p $(LFS)/sources/binutils-$(BINUTILS_VERS)/build
 	cd $(LFS)/sources/binutils-$(BINUTILS_VERS)/build; ../configure --prefix=$(LFS)/tools \
 		--with-sysroot=$(LFS) \
@@ -22,9 +22,11 @@ $(LFS)/sources/binutils-$(BINUTILS_VERS)/build/ar: | $(LFS)/sources/binutils-$(B
 		--disable-nls \
 		--enable-gprofng=no \
 		--disable-werror
+
+$(LFS)/sources/binutils-$(BINUTILS_VERS)/build/binutils/ar: | $(LFS)/sources/binutils-$(BINUTILS_VERS)/build/Makefile
 	make -C $(LFS)/sources/binutils-$(BINUTILS_VERS)/build -j$(shell nproc)
 
-$(LFS)/tools/bin/$(LFS_TGT)-ar: | $(LFS)/sources/binutils-$(BINUTILS_VERS)/build/ar
+$(LFS)/tools/bin/$(LFS_TGT)-ar: | $(LFS)/sources/binutils-$(BINUTILS_VERS)/build/binutils/ar
 	make -C $(LFS)/sources/binutils-$(BINUTILS_VERS)/build install
 
 # Gcc
@@ -131,7 +133,7 @@ $(LFS)/sources/glibc-$(GLIBC_VERS)/build/libc.so: | $(LFS)/sources/glibc-$(GLIBC
 	../configure \
 		--prefix=/usr \
 		--host=$(LFS_TGT) \
-		--build=$(shell ./scripts/glibc-config.guess) \
+		--build=$(shell $(LFS)/sources/glibc-$(GLIBC_VERS)/scripts/config.guess) \
 		--enable-kernel=3.2 \
 		--without-selinux \
 		--with-headers=$(LFS)/usr/include \
