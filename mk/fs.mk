@@ -22,7 +22,7 @@ $(LFS)/sources/: | $(LFS)/home/
 	chmod a+wt $@
 
 $(LFS)/sources/$(LFS_PKG_SRC): | $(LFS)/sources/
-	wget $(LFS_PKG_SRC_URL) -O $@
+	wget $(LFS_PKG_SRC_URL) -O $@ --inet4-only
 
 $(LFS)/etc/: | $(LFS)/sources/$(LFS_PKG_SRC)
 	mkdir -p $@
@@ -54,6 +54,6 @@ $(LFS)/lib64/: | $(LFS)/sbin/
 $(LFS)/tools/: | $(LFS)/lib64/
 	mkdir -p $@
 
-$(LFS)/sources/$(LFS_VERS): | $(LFS)/tools/
+$(LFS)/sources/$(LFS_VERS)/: | $(LFS)/tools/
 	tar xfv $(LFS)/sources/$(LFS_PKG_SRC) -C $(LFS)/sources
 
